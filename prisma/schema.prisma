@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bundles {
+  id              Int       @id @default(autoincrement())
+  jobId           Int
+  bundletype      Int       @default(0)
+  start           Int
+  end             Int
+  actorId         Int?      @default(0)
+  reviewerId      Int       @default(0)
+  evaluatorId     Int       @default(0)
+  tucount         Int       @default(0)
+  wordcount       Int       @default(0)
+  charcount       Int       @default(0)
+  processedcount  Int       @default(0)
+  confirmedcount  Int       @default(0)
+  qamode          Int       @default(0)
+  qemode          Int       @default(0)
+  revpct          Int       @default(0)
+  actstatus       Int       @default(0)
+  status          Int       @default(11)
+  donestatus      String    @default("0000000000") @db.VarChar(10)
+  bookmark        Int       @default(0)
+  reason          String?   @db.VarChar(1000)
+  startts         DateTime? @db.Timestamp(0)
+  duets           DateTime? @db.Timestamp(0)
+  gdscore         Int       @default(0)
+  allowhistrev    Int       @default(0)
+  notes           String?   @db.VarChar(2000)
+  annotatorid     Int?      @default(0)
+  effWords        Int?      @default(0)
+  effChars        Int?      @default(0)
+  assignoption    Int?      @default(0)
+  category        Int?      @default(0)
+  transcriberid   Int?      @default(0)
+  calculatingkpis Boolean?  @default(false)
+  vocalizerid     Int?      @default(0)
+  taggerid        Int?      @default(0)
+  showtranslation Boolean?  @default(true)
+  allowreject     Boolean?  @default(false)
+  jobs            jobs      @relation(fields: [jobId], references: [id], onDelete: Cascade, map: "FK_jobid")
+
+  @@index([jobId], map: "FK_jobid")
+}
+
+model jobs {
+  id               Int       @id @default(autoincrement())
+  projectId        Int
+  name             String    @db.VarChar(200)
+  src              String    @db.VarChar(10)
+  tgt              String    @db.VarChar(10)
+  jobtype          Int?
+  transtype        Int?
+  qebundling       Int       @default(0)
+  qebundlesize     Int       @default(0)
+  prepdef          String?   @db.VarChar(1000)
+  bundledef        String?   @db.VarChar(1000)
+  qadef            String?   @db.VarChar(1000)
+  qedef            String?   @db.VarChar(1000)
+  tucount          Int       @default(0)
+  wordcount        Int       @default(0)
+  charcount        Int       @default(0)
+  wcfactor         Float     @default(1) @db.Float
+  pmId             Int?
+  prepstatus       Int       @default(0)
+  wstatus          Int       @default(0)
+  bstatus          Int       @default(0)
+  startts          DateTime? @db.Timestamp(0)
+  duets            DateTime? @db.Timestamp(0)
+  ewordcount       Float     @default(0)
+  echarcount       Float     @default(0)
+  repetitions      Int       @default(0)
+  subtype          Int?      @default(0)
+  defaulttranscode Int?      @default(0)
+  jobtags          String?   @db.Text
+  calculatingkpis  Boolean?  @default(false)
+  taggingjson      String?   @db.Text
+  edittranslation  Boolean?  @default(true)
+  projects         projects  @relation(fields: [projectId], references: [id], onDelete: Cascade, map: "FK_projecid")
+  bundles          bundles[]
+
+  @@index([projectId], map: "FK_projecid")
+}
+
+model projects {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(200)
+  descr           String?   @db.VarChar(400)
+  customerId      Int?
+  pmId            Int?
+  status          Int       @default(0)
+  type            Int       @default(0)
+  createdat       DateTime? @db.Timestamp(0)
+  updatedat       DateTime? @db.Timestamp(0)
+  duets           DateTime? @db.Timestamp(0)
+  priority        Int?      @default(3)
+  calculatingkpis Boolean?  @default(false)
+  startts         DateTime? @db.Timestamp(0)
+  jobs            jobs[]
+}

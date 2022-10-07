@@ -1,0 +1,11 @@
+input addProjectInput {
+    name: String
+    descr: String
+    priority: Int
+    status: Int
+    type: Int
+}
+
+type Mutation {
+    addProject(input: addProjectInput): Project
+}

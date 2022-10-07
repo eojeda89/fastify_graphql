@@ -1,0 +1,11 @@
+type Project {
+    name: String
+    descr: String
+    priority: Int
+    status: Int
+    type: Int
+}
+
+type Query {
+    getProjects: [Project]
+}
